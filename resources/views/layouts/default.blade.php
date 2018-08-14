@@ -30,6 +30,7 @@
                 </form>
             </div>
         </nav>
+        @include('layouts._errors')
         @yield('content')
     </div>
     <script src="/js/app.js"></script>

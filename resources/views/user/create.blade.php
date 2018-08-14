@@ -1,4 +1,5 @@
 @extends('layouts.default') @section('content')
+
 <form action="{{route('user.store')}}" method="POST">
     @csrf
     <div class="card">
@@ -8,11 +9,11 @@
         <div class="card-body">
             <div class="form-group">
                 <label for="">Nickname</label>
-                <input type="text" class="form-control" name="name">
+            <input type="text" class="form-control" name="name" value="{{old('name')}}">
             </div>
             <div class="form-group">
                 <label for="">Email</label>
-                <input type="text" class="form-control" name="email">
+                <input type="text" class="form-control" name="email" value="{{old('email')}}">
             </div>
             <div class="form-group">
                 <label for="">Password</label>

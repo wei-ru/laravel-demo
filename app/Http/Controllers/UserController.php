@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use app\User;
+use App\User;
 
 class UserController extends Controller
 {
@@ -36,12 +36,16 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $data = $this->validate($request, [
             'name'=>'required|min:3',
             'email'=>'required|unique:users|email',
             'password'=>'required|min:5|confirmed'
         ]);
-        dd($request->all());
+
+        $data['password'] = bcrypt($data['password']);
+        User::create($data);
+        $status = \Auth::attempt(['email' => $request->email, 'password' => $request->password]);
+        return redirect()->route('home');
     }
 
     /**
