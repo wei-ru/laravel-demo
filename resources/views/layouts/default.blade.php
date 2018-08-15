@@ -21,16 +21,26 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                    <a class="nav-link" href="{{route('home')}}">Home</a>
+                        <a class="nav-link" href="{{route('home')}}">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{route('user.index')}}">User List</a>
                     </li>
                 </ul>
                 <form class="form-inline my-2 my-lg-0">
-                    <a href="{{route('user.create')}}" class="btn btn-danger my-2 my-sm-0 mr-2">Sign Up</a>
-                    <button class="btn btn-success my-2 my-sm-0">Login</button>
+                    @auth
+                        <a href="{{route('user.edit', auth()->user())}}" class="btn btn-info my-2 my-sm-0 mr-2">Edit</a>
+                        <a href="{{route('logout')}}" class="btn btn-danger my-2 my-sm-0 mr-2">Log out</a>
+                    @else
+                        <a href="{{route('user.create')}}" class="btn btn-danger my-2 my-sm-0 mr-2">Sign Up</a>
+                        <a href="{{route('login')}}" class="btn btn-success my-2 my-sm-0">Login</a>
+                    @endauth
+                    
                 </form>
             </div>
         </nav>
         @include('layouts._errors')
+        @include('layouts._message')
         @yield('content')
     </div>
     <script src="/js/app.js"></script>

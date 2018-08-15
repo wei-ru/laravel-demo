@@ -13,3 +13,8 @@
 
 Route::get('/', 'IndexController@home')->name('home');
 Route::resource('user', 'UserController');
+
+
+Route::get('logout', 'LoginController@logout')->name('logout');
+Route::get('login', 'LoginController@login')->name('login');
+Route::post('login', 'LoginController@store')->name('login');

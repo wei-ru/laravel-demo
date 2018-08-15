@@ -13,9 +13,21 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     public function __construct() {
+         $this->middleware('auth', [
+             'except'=>['index', 'show', 'create', 'store']
+         ]);
+
+         $this->middleware('guest', [
+            'only'=>['create', 'store']
+         ]);
+     }
+
     public function index()
     {
-        //
+        $users = User::paginate(5);
+        return view('user.index', compact('users'));
     }
 
     /**
@@ -45,6 +57,7 @@ class UserController extends Controller
         $data['password'] = bcrypt($data['password']);
         User::create($data);
         $status = \Auth::attempt(['email' => $request->email, 'password' => $request->password]);
+        session()->flash('success', 'Sign up success!');
         return redirect()->route('home');
     }
 
@@ -54,9 +67,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        //
+        return view('user.show', compact('user'));
     }
 
     /**
@@ -65,9 +78,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
+        $this->authorize('update', $user);
+        return view('user.edit', compact('user'));
     }
 
     /**
@@ -77,9 +91,20 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $data = $this->validate($request, [
+            'name'=>'required|min:3',
+            'password'=>'nullable|min:5|confirmed'
+        ]);
+
+        $user->name = $request->name;
+        if($request->password) {
+            $user->password = bcrypt($request->password);
+        }
+        $user->save();
+        session()->flash('success', 'Modify success!');
+        return redirect()->route('user.show', $user);
     }
 
     /**
@@ -88,8 +113,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        $this->authorize('delete', $user);
+        $user->delete();
+        session()->flash('success', 'Delete success!');
+        return redirect()->route('user.index');
     }
 }
